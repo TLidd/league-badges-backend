@@ -3,7 +3,6 @@ import bodyParser from 'body-parser'
 import { getCurrentGame, getLobbyData, getPlayerHistory, getLobbyNames, setRiotLimiter } from './riotApiCalls.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import * as path from 'path';
 import cors from 'cors';
 import dotenv from "dotenv";
 
@@ -19,8 +18,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const corsVal = cors();
 app.use(corsVal);
-
-app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('/summonerGame/:name', (req, res) => {
   let sumName = req.params.name;
@@ -49,10 +46,6 @@ app.get('/getLobbyList/:name', (req, res) => {
     res.json(data);
   });
 })
-
-app.get('*', (req, res) =>{
-  res.sendFile(path.join(__dirname+'/client/build/index.html'));
-});
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
