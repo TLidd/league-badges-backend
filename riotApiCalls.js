@@ -1,5 +1,6 @@
 import leaguePlayer from "./leagueClasses/leaguePlayer.js";
 import riotLimiter from './riotLimiter.js';
+import * as child from 'child_process';
 
 let rLimiter = new riotLimiter();
 
@@ -63,13 +64,26 @@ export async function getLobbyData(summonerName){
 
 export async function getLobbyNames(summonerName){
     let currentGame = await getCurrentGame(summonerName);
+    let teamChampIds = []
     if(currentGame?.status){
         return currentGame;
     }
     if(currentGame?.participants){
         let lobby = currentGame.participants.map(player => {
+            teamChampIds.push(player.championId);
             return player.summonerName;
         });
+        console.log(lobby);
+        const childPython = child.spawn('python', ['teamRoles.py', teamChampIds[0], teamChampIds[1], teamChampIds[2], teamChampIds[3], teamChampIds[4]]);
+        childPython.stdout.on('data', (data) => {
+            console.log(data.toString());
+        })
+
+        const childPython2 = child.spawn('python', ['teamRoles.py', teamChampIds[5], teamChampIds[6], teamChampIds[7], teamChampIds[8], teamChampIds[9]]);
+        childPython2.stdout.on('data', (data) => {
+            console.log(data.toString());
+        })
+
         return lobby;
     }
 }
