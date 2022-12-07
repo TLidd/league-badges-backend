@@ -64,26 +64,43 @@ export async function getLobbyData(summonerName){
 
 export async function getLobbyNames(summonerName){
     let currentGame = await getCurrentGame(summonerName);
-    let teamChampIds = []
+    let teamChampIds = [];
     if(currentGame?.status){
         return currentGame;
     }
     if(currentGame?.participants){
-        let lobby = currentGame.participants.map(player => {
+        let lobbyIds = {}
+        currentGame.participants.forEach(player => {
             teamChampIds.push(player.championId);
-            return player.summonerName;
+            lobbyIds[player.championId] = player.summonerName;
         });
-        console.log(lobby);
-        const childPython = child.spawn('python', ['teamRoles.py', teamChampIds[0], teamChampIds[1], teamChampIds[2], teamChampIds[3], teamChampIds[4]]);
-        childPython.stdout.on('data', (data) => {
-            console.log(data.toString());
-        })
-
-        const childPython2 = child.spawn('python', ['teamRoles.py', teamChampIds[5], teamChampIds[6], teamChampIds[7], teamChampIds[8], teamChampIds[9]]);
-        childPython2.stdout.on('data', (data) => {
-            console.log(data.toString());
-        })
-
+        let lobby = await getTeamRoles(teamChampIds, lobbyIds);
         return lobby;
     }
+}
+
+async function getTeamRoles(teamChampIds, lobbyIds){
+    let lobby = []
+    return new Promise((resolveFunc) => {
+        const childPython = child.spawn('python', ['teamRoles.py', teamChampIds[0], teamChampIds[1], teamChampIds[2], teamChampIds[3], teamChampIds[4]]);
+        childPython.stdout.on('data', (data) => {
+            let team1 = data.toString();
+            team1 = team1.split(" ");
+            for(let i = 0; i < 5; i++){
+                lobby.push(lobbyIds[team1[i]]);
+            }
+        })
+
+        childPython.on('exit', () => {
+            const childPython2 = child.spawn('python', ['teamRoles.py', teamChampIds[5], teamChampIds[6], teamChampIds[7], teamChampIds[8], teamChampIds[9]]);
+            childPython2.stdout.on('data', (data) => {
+                let team2 = data.toString();
+                team2 = team2.split(" ");
+                for(let i = 0; i < 5; i++){
+                    lobby.push(lobbyIds[team2[i]]);
+                }
+                resolveFunc(lobby);
+            })
+        })
+    })
 }

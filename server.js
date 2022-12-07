@@ -43,6 +43,7 @@ app.get('/lobbyData/:name', (req, res) => {
 app.get('/getLobbyList/:name', (req, res) => {
   let sumName = req.params.name;
   getLobbyNames(sumName).then(data => {
+    console.log(data);
     res.json(data);
   });
 })

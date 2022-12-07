@@ -10,7 +10,15 @@ def main():
         team.append(int(champID))
 
     roles = get_roles(champion_roles, team)
-    print(roles, flush=True)
+    values = roles.values()
+
+    role_ordering = ""
+
+    for value in values:
+        role_ordering += str(value) + " " 
+
+    print(role_ordering, flush=True) 
+
 
 
 if __name__ == "__main__":
