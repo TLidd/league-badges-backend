@@ -1,5 +1,6 @@
 import leaguePlayer from "./leagueClasses/leaguePlayer.js";
 import riotLimiter from './riotLimiter.js';
+import championIds from './champions.js'
 
 let rLimiter = new riotLimiter();
 
@@ -68,7 +69,7 @@ export async function getLobbyNames(summonerName){
     }
     if(currentGame?.participants){
         let lobby = currentGame.participants.map(player => {
-            return player.summonerName;
+            return [player.summonerName, championIds[player.championId]];
         });
         return lobby;
     }
