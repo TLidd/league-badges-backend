@@ -7,11 +7,13 @@ class leaguePlayer{
     gamesPlayed = null;
     puuid = null;
 
-    constructor(name, puuid, matchHistory){
+    constructor(name, puuid, matchHistory, tier, rank){
         this.name = name;
         this.puuid = puuid;
         this.matchHistory = matchHistory;
         this.playerData.SummonerName = name;
+        this.playerData.tier = tier;
+        this.playerData.rank = rank;
         this.gamesPlayed = matchHistory.length;
         this.#processMatches();
     }
@@ -31,6 +33,8 @@ class leaguePlayer{
     playerData = {
         SummonerName: "",
         Role: "",
+        tier: null,
+        rank: null,
         badges: {},
         champions: {},
     }
