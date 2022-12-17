@@ -54,9 +54,16 @@ export async function getPlayerHistory(summonerName){
         //accInfo[0] is the ranked solo 5v5 accInfo[1] is flex 5v5
         let tier = null;
         let rank = null;
-        if(accInfo[0]){
-            tier = accInfo[0]?.tier;
-            rank = accInfo[0]?.rank;
+        if(accInfo){
+            let playerAccInfo;
+            accInfo.map(type => {
+                if(type.queueType == "RANKED_SOLO_5x5") playerAccInfo = type;
+            })
+
+            if(playerAccInfo){
+                tier = playerAccInfo.tier;
+                rank = playerAccInfo.rank;
+            }
         }
 
         let player = new leaguePlayer(summonerInfo.name, puuid, matches, tier, rank);
