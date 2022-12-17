@@ -41,7 +41,7 @@ export async function getPlayerHistory(summonerName){
 
     //get match id list from puuid
     if(puuid){
-        let matchIds = await rLimiter.getFetchData(`https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=420&count=7&api_key=${process.env.RIOT_KEY}`);
+        let matchIds = await rLimiter.getFetchData(`https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=420&count=6&api_key=${process.env.RIOT_KEY}`);
 
         let matches;
         if(matchIds){
@@ -54,9 +54,9 @@ export async function getPlayerHistory(summonerName){
         //accInfo[0] is the ranked solo 5v5 accInfo[1] is flex 5v5
         let tier = null;
         let rank = null;
-        if(accInfo){
-            tier = accInfo[0].tier;
-            rank = accInfo[0].rank;
+        if(accInfo[0]){
+            tier = accInfo[0]?.tier;
+            rank = accInfo[0]?.rank;
         }
 
         let player = new leaguePlayer(summonerInfo.name, puuid, matches, tier, rank);
