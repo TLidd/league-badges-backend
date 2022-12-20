@@ -37,6 +37,11 @@ class leaguePlayer{
         rank: null,
         badges: {},
         champions: {},
+        matchHistory: {
+            wins: 0,
+            losses: 0,
+            games: []
+        }
     }
 
     //process the data by getting the different badges to describe the player (ranked games only)
@@ -46,9 +51,12 @@ class leaguePlayer{
                 if(match?.info?.participants){
                     let player = this.#getPlayerMatchStats(match.info.participants);
                     if(player){
+                        this.playerData.matchHistory.wins 
                         this.playedRoles[player.teamPosition] += 1;
 
                         let champion = player.championName;
+                        
+                        this.#processGame(player);
 
                         if(this.playerData.champions[champion] === undefined){
                             this.playerData.champions[champion] = new championHistory(champion);
@@ -112,7 +120,21 @@ class leaguePlayer{
         }
     }
 
+    //process this particular match for the player
+    #processGame(playerInfo){
+        if(playerInfo.win) this.playerData.matchHistory.wins += 1;
+        let matchInfo = {
+            win: playerInfo.win,
+            kills: playerInfo.kills,
+            assists: playerInfo.assists,
+            deaths: playerInfo.deaths,
+            champion: playerInfo.championName,
+        }
+        this.playerData.matchHistory.games.push(matchInfo);
+    }
+
     getPlayerData(){
+        this.playerData.matchHistory.losses = this.gamesPlayed - this.playerData.matchHistory.wins;
         return this.playerData;
     }
 
