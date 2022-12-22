@@ -19,6 +19,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const corsVal = cors();
 app.use(corsVal);
 
+app.get('/pingServer', (req, res) => {
+  res.sendStatus(200);
+})
+
 app.get('/summonerGame/:name', (req, res) => {
   let sumName = req.params.name;
   getCurrentGame(sumName).then(data => {
