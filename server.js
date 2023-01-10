@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { getCurrentGame, getLobbyData, getPlayerHistory, getLobbyNames, setRiotLimiter } from './riotApiCalls.js';
+import { getCurrentGame, getLobbyData, getPlayerHistory, getLobbyNames} from './riotApiCalls.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
@@ -54,5 +54,3 @@ app.get('/getLobbyList/:name', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
-
-setRiotLimiter();
