@@ -3,7 +3,11 @@ import RiotMatch from './riotMatchModel.js';
 
 mongoose.set("strictQuery", false);
 
-mongoose.connect(process.env.MONGO_DB);
+mongoose.connect(process.env.MONGO_DB, () => {
+    console.log("Connected to Mongo Database");
+    },
+    e => console.error(e)
+);
 
 export class matchDBHandler{
     
