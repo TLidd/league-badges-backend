@@ -1,6 +1,7 @@
 import leaguePlayer from "./leagueClasses/leaguePlayer.js";
-import championIds from './champions.js'
-import { LolApi, Constants } from 'twisted'
+import championIds from './champions.js';
+import { LolApi, Constants } from 'twisted';
+import { matchDBHandler } from "./dbHandler.js";
 
 const rApi = new LolApi({
     key: `${process.env.RIOT_KEY}`,
@@ -11,13 +12,18 @@ const rApi = new LolApi({
     // }
 });
 
-export async function getSummoner(summonerName){
-    let res;
+const riotMatchDB = new matchDBHandler();
+
+export async function getSummoner(summonerName){  
     if(summonerName.length >= 3){
-        res = await rApi.Summoner.getByName(summonerName, Constants.Regions.AMERICA_NORTH);
-        return res.response;
+        try{
+            let res = await rApi.Summoner.getByName(summonerName, Constants.Regions.AMERICA_NORTH);
+            if(res) return res.response;
+        } catch{
+            return;
+        }
     }
-    return res;
+    return;
 }
 
 export async function getCurrentGame(summonerName){
@@ -60,14 +66,14 @@ export async function getPlayerHistory(summonerName){
             console.log(e.message);
         }
 
-        let matches;
+        let matches = [];
         if(matchIds){
-            matches = await Promise.all(Object.values(matchIds).map(matchId => {
-                return (rApi.MatchV5.get(matchId, Constants.RegionGroups.AMERICAS));
-            }))
-            .catch(err => console.log(err));
-            if(matches){
-                matches = matches.map(match => match.response);
+            for(let i = 0; i < matchIds.length; i++){
+                let matchInfo = await getMatchFromDB(matchIds[i]);
+                if(!matchInfo){
+                    matchInfo = await getMatchRiotAPI(matchIds[i]);
+                }
+                matches.push(matchInfo);
             }
         }
 
@@ -85,7 +91,6 @@ export async function getPlayerHistory(summonerName){
                 rank = playerAccInfo.rank;
             }
         }
-
         let player = new leaguePlayer(summonerInfo.name, puuid, matches, tier, rank);
         return player.getPlayerData();
     }
@@ -113,4 +118,25 @@ export async function getLobbyNames(summonerName){
         });
         return lobby;
     }
+}
+
+/**
+ * Gets the match data from the Riot Api and inputs it into the database.
+ * @param {string} matchId 
+ * @returns match data
+ */
+async function getMatchRiotAPI(matchId){
+    let data = await rApi.MatchV5.get(matchId, Constants.RegionGroups.AMERICAS);
+    riotMatchDB.inputMatch(matchId, data.response);
+    return data.response;
+}
+
+/**
+ * Gets the match data from the database.
+ * @param {string} matchId 
+ * @returns match data
+ */
+async function getMatchFromDB(matchId){
+    let data = await riotMatchDB.getMatch(matchId);
+    return data;
 }
