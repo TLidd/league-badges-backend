@@ -17,11 +17,6 @@ export async function getSummoner(summonerName){
         res = await rApi.Summoner.getByName(summonerName, Constants.Regions.AMERICA_NORTH);
         return res.response;
     }
-    // let summonerInfo;
-    // if(summonerName.length >= 3){
-    //     summonerInfo = await rLimiter.getFetchData(`https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}?api_key=${process.env.RIOT_KEY}`);
-    // }
-    // return summonerInfo;
     return res;
 }
 
@@ -39,20 +34,15 @@ export async function getCurrentGame(summonerName){
             return data;
         } catch{
             data.summonerName = summonerInfo.name;
+            data.status = { message: 'Data not found', status_code: 404 };
             return data;
         }
-        // let data = await rApi.Spectator.activeGame(summonerInfo.accountId, Constants.Regions.AMERICA_NORTH);
-        // console.log(data);
-        // let data = await rLimiter.getFetchData(`https://na1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/${summonerInfo.id}?api_key=${process.env.RIOT_KEY}`);
-        // data.summonerName = summonerInfo.name;
-        // return data.response;
     }
 }
 
 export async function getPlayerHistory(summonerName){
     //get summoner puuid from name
     let summonerInfo = await getSummoner(summonerName);
-    // let summonerInfo = await rLimiter.getFetchData(`https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}?api_key=${process.env.RIOT_KEY}`);
 
     const puuid = summonerInfo?.puuid;
 
@@ -60,21 +50,25 @@ export async function getPlayerHistory(summonerName){
 
     //get ranked solo5v5 information for their rank and tier
     let accInfo = await rApi.League.bySummoner(accId, Constants.Regions.AMERICA_NORTH);
-    // let accInfo = await rLimiter.getFetchData(`https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/${accId}?api_key=${process.env.RIOT_KEY}`);
 
     //get match id list from puuid
     if(puuid){
-        let matchIds = await rApi.MatchV5.list(puuid, Constants.Regions.AMERICA_NORTH);
-        console.log(matchIds);
-        // let matchIds = await rLimiter.getFetchData(`https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=420&count=6&api_key=${process.env.RIOT_KEY}`);
+        let matchIds;
+        try{
+            matchIds = (await rApi.MatchV5.list(puuid, Constants.RegionGroups.AMERICAS)).response;
+        } catch(e){
+            console.log(e.message);
+        }
 
         let matches;
         if(matchIds){
             matches = await Promise.all(Object.values(matchIds).map(matchId => {
-                return (rApi.MatchV5.get(matchId, Constants.Regions.AMERICA_NORTH)).response;
-                // return rLimiter.getFetchData(`https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}?api_key=${process.env.RIOT_KEY}`);
+                return (rApi.MatchV5.get(matchId, Constants.RegionGroups.AMERICAS));
             }))
             .catch(err => console.log(err));
+            if(matches){
+                matches = matches.map(match => match.response);
+            }
         }
 
         //accInfo[0] is the ranked solo 5v5 accInfo[1] is flex 5v5
@@ -82,7 +76,7 @@ export async function getPlayerHistory(summonerName){
         let rank = null;
         if(accInfo){
             let playerAccInfo;
-            accInfo.map(type => {
+            accInfo.response.map(type => {
                 if(type.queueType == "RANKED_SOLO_5x5") playerAccInfo = type;
             })
 

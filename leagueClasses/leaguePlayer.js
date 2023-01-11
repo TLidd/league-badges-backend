@@ -14,7 +14,7 @@ class leaguePlayer{
         this.playerData.SummonerName = name;
         this.playerData.tier = tier;
         this.playerData.rank = rank;
-        this.gamesPlayed = matchHistory.length;
+        if(matchHistory) this.gamesPlayed = matchHistory.length;
         this.#processMatches();
     }
 
