@@ -61,7 +61,7 @@ export async function getPlayerHistory(summonerName){
     if(puuid){
         let matchIds;
         try{
-            matchIds = (await rApi.MatchV5.list(puuid, Constants.RegionGroups.AMERICAS)).response;
+            matchIds = (await rApi.MatchV5.list(puuid, Constants.RegionGroups.AMERICAS, {queue: 420, count: 12})).response;
         } catch(e){
             console.log(e.message);
         }

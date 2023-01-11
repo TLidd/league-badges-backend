@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import RiotMatch from './riotMatchModel.js';
 
 mongoose.set("strictQuery", false);
-//make this link an env variable to secure it
+
 mongoose.connect(process.env.MONGO_DB);
 
 export class matchDBHandler{
