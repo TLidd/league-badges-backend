@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { getCurrentGame, getLobbyData, getPlayerHistory, getLobbyNames} from './riotApiCalls.js';
+import { getCurrentGame, getPlayerHistory, getLobbyNames} from './riotApiCalls.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
@@ -23,30 +23,26 @@ app.get('/pingServer', (req, res) => {
   res.sendStatus(200);
 })
 
-app.get('/summonerGame/:name', (req, res) => {
+app.get('/summonerGame/:name/:region', (req, res) => {
   let sumName = req.params.name;
-  getCurrentGame(sumName).then(data => {
+  let region = req.params.region;
+  getCurrentGame(sumName, region).then(data => {
     res.json(data);
   });
 });
 
-app.get('/summonerData/:name', (req, res) => {
+app.get('/summonerData/:name/:region', (req, res) => {
   let sumName = req.params.name;
-  getPlayerHistory(sumName).then(data => {
+  let region = req.params.region;
+  getPlayerHistory(sumName, region).then(data => {
     res.json(data);
   });
 })
 
-app.get('/lobbyData/:name', (req, res) => {
+app.get('/getLobbyList/:name/:region', (req, res) => {
   let sumName = req.params.name;
-  getLobbyData(sumName).then(data => {
-    res.json(data);
-  });
-})
-
-app.get('/getLobbyList/:name', (req, res) => {
-  let sumName = req.params.name;
-  getLobbyNames(sumName).then(data => {
+  let region = req.params.region;
+  getLobbyNames(sumName, region).then(data => {
     res.json(data);
   });
 })

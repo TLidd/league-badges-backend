@@ -14,10 +14,38 @@ const rApi = new LolApi({
 
 const riotMatchDB = new matchDBHandler();
 
-export async function getSummoner(summonerName){  
+const regionIDS = Object.freeze({
+    "NA": Constants.Regions.AMERICA_NORTH,
+    "BR": Constants.Regions.BRAZIL,
+    "EUNE": Constants.Regions.EU_EAST,
+    "EUW": Constants.Regions.EU_WEST,
+    "JP": Constants.Regions.JAPAN,
+    "KR": Constants.Regions.KOREA,
+    "LA1": Constants.Regions.LAT_NORTH,
+    "LA2": Constants.Regions.LAT_SOUTH,
+    "OCE": Constants.Regions.OCEANIA,
+    "RU": Constants.Regions.RUSSIA,
+    "TR": Constants.Regions.TURKEY,
+});
+
+const regionCluster = Object.freeze({
+    "NA": Constants.RegionGroups.AMERICAS,
+    "BR": Constants.RegionGroups.AMERICAS,
+    "EUNE": Constants.RegionGroups.EUROPE,
+    "EUW": Constants.RegionGroups.EUROPE,
+    "JP": Constants.RegionGroups.ASIA,
+    "KR": Constants.RegionGroups.ASIA,
+    "LA1": Constants.RegionGroups.AMERICAS,
+    "LA2": Constants.RegionGroups.AMERICAS,
+    "OCE": Constants.RegionGroups.SEA,
+    "RU": Constants.RegionGroups.EUROPE,
+    "TR": Constants.RegionGroups.EUROPE,
+})
+
+export async function getSummoner(summonerName, region){  
     if(summonerName.length >= 3){
         try{
-            let res = await rApi.Summoner.getByName(summonerName, Constants.Regions.AMERICA_NORTH);
+            let res = await rApi.Summoner.getByName(summonerName, regionIDS[region]);
             if(res) return res.response;
         } catch{
             return;
@@ -26,15 +54,15 @@ export async function getSummoner(summonerName){
     return;
 }
 
-export async function getCurrentGame(summonerName){
-    let summonerInfo = await getSummoner(summonerName);
+export async function getCurrentGame(summonerName, region){
+    let summonerInfo = await getSummoner(summonerName, region);
     if(summonerInfo?.status){
         return summonerInfo;
     }
     if(summonerInfo){
         let data = {};
         try{
-            data = await rApi.Spectator.activeGame(summonerInfo.id, Constants.Regions.AMERICA_NORTH);
+            data = await rApi.Spectator.activeGame(summonerInfo.id, regionIDS[region]);
             data = data.response;
             data.summonerName = summonerInfo.name;
             return data;
@@ -46,22 +74,22 @@ export async function getCurrentGame(summonerName){
     }
 }
 
-export async function getPlayerHistory(summonerName){
+export async function getPlayerHistory(summonerName, region){
     //get summoner puuid from name
-    let summonerInfo = await getSummoner(summonerName);
+    let summonerInfo = await getSummoner(summonerName, region);
 
     const puuid = summonerInfo?.puuid;
 
     const accId = summonerInfo?.id;
 
     //get ranked solo5v5 information for their rank and tier
-    let accInfo = await rApi.League.bySummoner(accId, Constants.Regions.AMERICA_NORTH);
+    let accInfo = await rApi.League.bySummoner(accId, regionIDS[region]);
 
     //get match id list from puuid
     if(puuid){
         let matchIds;
         try{
-            matchIds = (await rApi.MatchV5.list(puuid, Constants.RegionGroups.AMERICAS, {queue: 420, count: 12})).response;
+            matchIds = (await rApi.MatchV5.list(puuid, regionCluster[region], {queue: 420, count: 12})).response;
         } catch(e){
             console.log(e.message);
         }
@@ -71,7 +99,7 @@ export async function getPlayerHistory(summonerName){
             for(let i = 0; i < matchIds.length; i++){
                 let matchInfo = await getMatchFromDB(matchIds[i]);
                 if(!matchInfo){
-                    matchInfo = await getMatchRiotAPI(matchIds[i]);
+                    matchInfo = await getMatchRiotAPI(matchIds[i], region);
                 }
                 matches.push(matchInfo);
             }
@@ -96,19 +124,8 @@ export async function getPlayerHistory(summonerName){
     }
 }
 
-export async function getLobbyData(summonerName){
-    let gameData = await getCurrentGame(summonerName);
-    if(gameData?.participants){
-        let lobbyData = await Promise.all(Object.values(gameData.participants).map(player => {
-            return getPlayerHistory(player.summonerName);
-        }))
-        .catch(err => console.log(err));
-        return {team1: lobbyData.slice(0,5), team2: lobbyData.slice(5,10)}
-    }
-}
-
-export async function getLobbyNames(summonerName){
-    let currentGame = await getCurrentGame(summonerName);
+export async function getLobbyNames(summonerName, region){
+    let currentGame = await getCurrentGame(summonerName, region);
     if(currentGame?.status){
         return currentGame;
     }
@@ -125,8 +142,8 @@ export async function getLobbyNames(summonerName){
  * @param {string} matchId 
  * @returns match data
  */
-async function getMatchRiotAPI(matchId){
-    let data = await rApi.MatchV5.get(matchId, Constants.RegionGroups.AMERICAS);
+async function getMatchRiotAPI(matchId, region){
+    let data = await rApi.MatchV5.get(matchId, regionCluster[region]);
     riotMatchDB.inputMatch(matchId, data.response);
     return data.response;
 }
