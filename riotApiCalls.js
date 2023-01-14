@@ -1,7 +1,7 @@
 import leaguePlayer from "./leagueClasses/leaguePlayer.js";
 import championIds from './champions.js';
 import { LolApi, Constants } from 'twisted';
-import { matchDBHandler } from "./dbHandler.js";
+import { matchDBHandler } from "./database/dbHandler.js";
 
 const rApi = new LolApi({
     key: `${process.env.RIOT_KEY}`,
