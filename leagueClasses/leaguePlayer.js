@@ -123,12 +123,14 @@ class leaguePlayer{
     //process this particular match for the player
     #processGame(playerInfo){
         if(playerInfo.win) this.playerData.matchHistory.wins += 1;
+        let playerItems = [playerInfo.item0, playerInfo.item1, playerInfo.item2, playerInfo.item3, playerInfo.item4, playerInfo.item5, playerInfo.item6]
         let matchInfo = {
             win: playerInfo.win,
             kills: playerInfo.kills,
             assists: playerInfo.assists,
             deaths: playerInfo.deaths,
             champion: playerInfo.championName,
+            items: playerItems,
         }
         this.playerData.matchHistory.games.push(matchInfo);
     }
