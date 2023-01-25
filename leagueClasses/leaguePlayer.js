@@ -152,7 +152,7 @@ class leaguePlayer{
                 "Total Damage Taken": playerInfo.totalDamageTaken,
                 "Total Vision Score": playerInfo.visionScore,
                 "Total Gold Earned": playerInfo.goldEarned,
-                "Total Minions Killed": playerInfo.totalMinionsKilled,
+                "Total Minions Killed": playerInfo.totalMinionsKilled + playerInfo.neutralMinionsKilled,
                 "Turret Takedowns": playerInfo.turretTakedowns,
             }
         }
