@@ -26,6 +26,20 @@ class leaguePlayer{
         "UTILITY" : 0,
     }
 
+    summonerSpellIds = {
+        "1": "Cleanse",
+        "3": "Exhaust",
+        "4": "Flash",
+        "6": "Haste",
+        "7": "Heal",
+        "11": "Smite",
+        "12": "Teleport",
+        "32": "Mark",
+        "13": "Clarity",
+        "14": "Ignite",
+        "21": "Barrier",
+    }
+
     /*badges are to describe the players playstyle
           (0-2) represents the level the player is at. example of aggro
           2 being a very aggressive player, 0 being a very passive player.*/
@@ -131,6 +145,16 @@ class leaguePlayer{
             deaths: playerInfo.deaths,
             champion: playerInfo.championName,
             items: playerItems,
+            spell1: this.summonerSpellIds[playerInfo.summoner1Id],
+            spell2: this.summonerSpellIds[playerInfo.summoner2Id],
+            gameStats: {
+                "Total Damage Dealt": playerInfo.totalDamageDealt,
+                "Total Damage Taken": playerInfo.totalDamageTaken,
+                "Total Vision Score": playerInfo.visionScore,
+                "Total Gold Earned": playerInfo.goldEarned,
+                "Total Minions Killed": playerInfo.totalMinionsKilled,
+                "Turret Takedowns": playerInfo.turretTakedowns,
+            }
         }
         this.playerData.matchHistory.games.push(matchInfo);
     }
