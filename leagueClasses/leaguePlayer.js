@@ -26,6 +26,7 @@ class leaguePlayer{
         "UTILITY" : 0,
     }
 
+    //https://github.com/ngryman/lol-spells/blob/master/spells.json for reference.
     summonerSpellIds = {
         "1": "Cleanse",
         "3": "Exhaust",
@@ -36,7 +37,7 @@ class leaguePlayer{
         "12": "Teleport",
         "32": "Mark",
         "13": "Clarity",
-        "14": "Ignite",
+        "14": "Dot",
         "21": "Barrier",
     }
 
