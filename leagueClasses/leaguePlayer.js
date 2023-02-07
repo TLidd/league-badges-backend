@@ -149,7 +149,7 @@ class leaguePlayer{
             spell1: this.summonerSpellIds[playerInfo.summoner1Id],
             spell2: this.summonerSpellIds[playerInfo.summoner2Id],
             gameStats: {
-                "Total Damage Dealt": playerInfo.totalDamageDealt,
+                "Total Damage Dealt": playerInfo.totalDamageDealtToChampions,
                 "Total Damage Taken": playerInfo.totalDamageTaken,
                 "Total Vision Score": playerInfo.visionScore,
                 "Total Gold Earned": playerInfo.goldEarned,
