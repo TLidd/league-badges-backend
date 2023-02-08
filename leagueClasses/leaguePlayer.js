@@ -28,7 +28,7 @@ class leaguePlayer{
 
     //https://github.com/ngryman/lol-spells/blob/master/spells.json for reference.
     summonerSpellIds = {
-        "1": "Cleanse",
+        "1": "Boost",
         "3": "Exhaust",
         "4": "Flash",
         "6": "Haste",
