@@ -51,6 +51,11 @@ export default class championHistory{
         "UTILITY" : 0,
     }
 
+    /**
+     * @param {Object} match league match data
+     * 
+     * @description processes the league match data to total the information on the player's performance of the champion for their match history.
+     */
     processChampData(match){
         let players = match.info.participants;
 
@@ -82,6 +87,11 @@ export default class championHistory{
         this.champData.gamesPlayed += 1;
     }
 
+    /**
+     * 
+     * @param {Object} participants the lobby list
+     * @returns the stats of the current player champion.
+     */
     getChampGameInfo(participants){
         return participants.find(participant => participant.championName == this.champData.champName);
     }
@@ -96,6 +106,12 @@ export default class championHistory{
         return kills;
     }
 
+    /**
+     * 
+     * @param {Object} participants takes the lobby player list
+     * @param {String} key the badge key to compare the player vs. lobby
+     * @returns a number corresponding to their position in the lobby
+     */
     getBadgePoints(participants, key){
         let participantScores = [];
         let championScore;
@@ -126,6 +142,9 @@ export default class championHistory{
         }
     }
 
+    /**
+     * this function should be called when wanting to cumulate the games of the specific champion and create specific champion badges.
+     */
     createChampionBadges(){
         if(this.champData.gamesPlayed > 0){
             this.champData.badges = createBadgeList(this.#badgePoints, this.champData.gamesPlayed);
@@ -135,6 +154,10 @@ export default class championHistory{
         }
     }
 
+    /**
+     * 
+     * @returns the badge points for the champion
+     */
     getChampionBadgeData(){
         let badgeData = this.#badgePoints;
         badgeData.firstBloods = this.#matchTotals.firstBloods;
@@ -142,7 +165,9 @@ export default class championHistory{
         return badgeData;
     }
 
-    //create the stats that will be graphed onto the chart
+    /**
+     * create the stats that will be graphed onto the chart
+     */
     createChampStats(){
         let champStats = {}
 

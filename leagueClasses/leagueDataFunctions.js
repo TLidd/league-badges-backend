@@ -1,3 +1,9 @@
+/**
+ * 
+ * @param {Number} badgePoints 
+ * @param {Number} gamesPlayed 
+ * @returns a score between (0-2) that indicates the badge level (2 being the best).
+ */
 export function createBadge(badgePoints, gamesPlayed){
     let avgBadgePoints = (badgePoints/gamesPlayed).toFixed(3);
     if(avgBadgePoints > 1.75){
@@ -11,6 +17,12 @@ export function createBadge(badgePoints, gamesPlayed){
     }
 }
 
+/**
+ * 
+ * @param {Object} badgeData the badge list
+ * @param {Number} gamesPlayed 
+ * @returns a badge object that maps the key to the level based on the average points for the games played.
+ */
 export function createBadgeList(badgeData, gamesPlayed){
     let badges = {};
     for(const key of Object.keys(badgeData)){
@@ -22,6 +34,12 @@ export function createBadgeList(badgeData, gamesPlayed){
     return badges;
 }
 
+/**
+ * 
+ * @param {Number} fbTotal 
+ * @param {Number} gamesPlayed 
+ * @returns the badge level for first bloods based on a percentage over their games played.
+ */
 export function createFBBadge(fbTotal, gamesPlayed){
     let percentage = (fbTotal / gamesPlayed)*100;
     if(percentage >= 30 && percentage < 40){
@@ -35,6 +53,11 @@ export function createFBBadge(fbTotal, gamesPlayed){
     }
 }
 
+/**
+ * 
+ * @param {Object} rolesPlayed 
+ * @returns most played role
+ */
 export function getMainRole(rolesPlayed){
     let max = 0;
     let mostPlayed = null;
