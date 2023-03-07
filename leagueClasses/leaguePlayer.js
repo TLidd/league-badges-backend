@@ -155,6 +155,8 @@ class leaguePlayer{
                 "Total Gold Earned": playerInfo.goldEarned,
                 "Total Minions Killed": playerInfo.totalMinionsKilled + playerInfo.neutralMinionsKilled,
                 "Turret Takedowns": playerInfo.turretTakedowns,
+                "Allies Shielded": playerInfo.totalDamageShieldedOnTeammates,
+                "Allies Healed":  playerInfo.totalHealsOnTeammates,
             }
         }
         this.playerData.matchHistory.games.push(matchInfo);
@@ -162,7 +164,6 @@ class leaguePlayer{
 
     getPlayerData(){
         this.playerData.matchHistory.losses = this.gamesPlayed - this.playerData.matchHistory.wins;
-        console.log(this.playerData)
         return this.playerData;
     }
 
