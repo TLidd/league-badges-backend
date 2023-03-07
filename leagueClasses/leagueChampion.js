@@ -31,6 +31,8 @@ export default class championHistory{
         wardsKilled: 0,
         goldEarned: 0,
         wins: 0,
+        baronKills: 0,
+        dragonKills: 0,
     }
 
     #badgePoints = {
@@ -41,6 +43,8 @@ export default class championHistory{
         totalDamageTaken: 0,
         wardsKilled: 0,
         goldEarned: 0,
+        baronKills: 0,
+        dragonKills: 0,
     }
 
     #playedRoles = {

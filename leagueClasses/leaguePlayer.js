@@ -161,6 +161,7 @@ class leaguePlayer{
 
     getPlayerData(){
         this.playerData.matchHistory.losses = this.gamesPlayed - this.playerData.matchHistory.wins;
+        console.log(this.playerData)
         return this.playerData;
     }
 
