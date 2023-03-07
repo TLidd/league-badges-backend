@@ -77,6 +77,7 @@ export async function getCurrentGame(summonerName, region){
 export async function getPlayerHistory(summonerName, region){
     //get summoner puuid from name
     let summonerInfo = await getSummoner(summonerName, region);
+    if(summonerInfo == undefined) return
 
     const puuid = summonerInfo?.puuid;
 

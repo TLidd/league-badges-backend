@@ -27,6 +27,10 @@ app.get('/summonerGame/:name/:region', (req, res) => {
   let sumName = req.params.name;
   let region = req.params.region;
   getCurrentGame(sumName, region).then(data => {
+    if(data == undefined){
+      data = {};
+      data.status = {message: 'Data not found', status_code: 404}
+    }
     res.json(data);
   });
 });
@@ -35,7 +39,8 @@ app.get('/summonerData/:name/:region', (req, res) => {
   let sumName = req.params.name;
   let region = req.params.region;
   getPlayerHistory(sumName, region).then(data => {
-    res.json(data);
+    if(data == undefined) res.sendStatus(404);
+    else res.json(data);
   });
 })
 

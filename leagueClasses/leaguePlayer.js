@@ -26,8 +26,9 @@ class leaguePlayer{
         "UTILITY" : 0,
     }
 
+    //https://github.com/ngryman/lol-spells/blob/master/spells.json for reference.
     summonerSpellIds = {
-        "1": "Cleanse",
+        "1": "Boost",
         "3": "Exhaust",
         "4": "Flash",
         "6": "Haste",
@@ -36,7 +37,7 @@ class leaguePlayer{
         "12": "Teleport",
         "32": "Mark",
         "13": "Clarity",
-        "14": "Ignite",
+        "14": "Dot",
         "21": "Barrier",
     }
 
@@ -148,7 +149,7 @@ class leaguePlayer{
             spell1: this.summonerSpellIds[playerInfo.summoner1Id],
             spell2: this.summonerSpellIds[playerInfo.summoner2Id],
             gameStats: {
-                "Total Damage Dealt": playerInfo.totalDamageDealt,
+                "Total Damage Dealt": playerInfo.totalDamageDealtToChampions,
                 "Total Damage Taken": playerInfo.totalDamageTaken,
                 "Total Vision Score": playerInfo.visionScore,
                 "Total Gold Earned": playerInfo.goldEarned,
