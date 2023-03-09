@@ -34,8 +34,13 @@ export default class championHistory{
         totalHealsOnTeammates: 0,
         totalDamageShieldedOnTeammates: 0,
         totalTimeCCDealt: 0,
+        dragonKills: 0,
+        baronKills: 0,
     }
 
+    /**
+     * badgePoints are calculated from 0-2 over the total amount of games
+     */
     #badgePoints = {
         visionScore: 0,
         totalMinionsKilled: 0,
@@ -47,6 +52,8 @@ export default class championHistory{
         totalHealsOnTeammates: 0,
         totalDamageShieldedOnTeammates: 0,
         totalTimeCCDealt: 0,
+        dragonKills: 0,
+        baronKills: 0,
     }
 
     #playedRoles = {
