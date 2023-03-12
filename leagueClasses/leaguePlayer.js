@@ -64,14 +64,13 @@ class leaguePlayer{
         for(const match of this.matchHistory){
             if(match?.hasOwnProperty('info')){
                 if(match?.info?.participants){
+                    this.playerData.matchHistory.games.push(this.#getLobbyMatchStats(match.info.participants));
+
                     let player = this.#getPlayerMatchStats(match.info.participants);
                     if(player){
-                        this.playerData.matchHistory.wins 
                         this.playedRoles[player.teamPosition] += 1;
 
                         let champion = player.championName;
-                        
-                        this.#processGame(player);
 
                         if(this.playerData.champions[champion] === undefined){
                             this.playerData.champions[champion] = new championHistory(champion);
@@ -92,11 +91,23 @@ class leaguePlayer{
         let playerStats = players.find(player => {
             if(player.puuid == this.puuid){
                 return player;
-            }else if(player.summonerName == this.name){
+            }
+            if(player.summonerName == this.name){
                 return player;
             }
         });
         return playerStats;
+    }
+
+    #getLobbyMatchStats(players){
+        let lobbyStats = {}
+        for(let i = 0; i < players.length; i++){
+            if(players[i].puuid == this.puuid || players[i].summonerName == this.name){
+                if(players[i].win) this.playerData.matchHistory.wins += 1;
+            }
+            lobbyStats[players[i].summonerName] = this.#processGame(players[i]);
+        }
+        return lobbyStats;
     }
 
     // fill the PlayerData object with the champion stats/badges and create overall badges for the player
@@ -137,7 +148,6 @@ class leaguePlayer{
 
     //process this particular match for the player
     #processGame(playerInfo){
-        if(playerInfo.win) this.playerData.matchHistory.wins += 1;
         let playerItems = [playerInfo.item0, playerInfo.item1, playerInfo.item2, playerInfo.item3, playerInfo.item4, playerInfo.item5, playerInfo.item6]
         let matchInfo = {
             win: playerInfo.win,
@@ -159,7 +169,7 @@ class leaguePlayer{
                 "Allies Healed":  playerInfo.totalHealsOnTeammates,
             }
         }
-        this.playerData.matchHistory.games.push(matchInfo);
+        return matchInfo;
     }
 
     getPlayerData(){
